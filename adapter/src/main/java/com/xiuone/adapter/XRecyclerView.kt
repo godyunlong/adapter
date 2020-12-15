@@ -30,6 +30,7 @@ class XRecyclerView (context: Context,attributeSet: AttributeSet?=null,defStyleA
         }else null
     }
 
+
     /**
      * 设置是否可以加载更多
      */

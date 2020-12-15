@@ -53,4 +53,11 @@ class RecyclerDataController<T> {
         if (!init && preloadView != null && showPreloading) return 1
         return  0
     }
+
+    fun setData(data:MutableList<T>,isNew: Boolean){
+        if (isNew)
+            this.datas.clear()
+        this.datas.addAll(data)
+        init = true
+    }
 }

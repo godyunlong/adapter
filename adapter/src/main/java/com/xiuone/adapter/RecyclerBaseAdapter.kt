@@ -91,4 +91,17 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewViewHold
     abstract fun dataType(headPosition:Int,position: Int):Int
     abstract fun onDataCreateViewHolder(parent: ViewGroup,viewType: Int):RecyclerViewViewHolder
     abstract fun bindView(holder: RecyclerViewViewHolder,item:T,position: Int)
+
+    fun setNewData(data:MutableList<T>){
+        recyclerDataController.setData(data,true)
+        notifyDataSetChanged()
+    }
+
+    fun addData(data: MutableList<T>){
+        recyclerDataController.setData(data,false)
+        notifyItemRangeInserted(refreshLoadController.getDataSize()+refreshLoadController.getDataSize() - data.size, data.size)
+    }
+    fun addData(position:Int,item: T){
+
+    }
 }
