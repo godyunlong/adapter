@@ -1,56 +1,22 @@
 package com.xiuone.adapter.controller
 
 import android.view.View
+import com.xiuone.adapter.adapter.RecyclerBaseAdapter
 
 /**
  * 用于控制recyclerView的数量
  */
-class RecyclerDataController<T> {
+class RecyclerDataController<T>(adapter: RecyclerBaseAdapter<T>) :RecyclerHeadFootController<T>(adapter){
     val datas = ArrayList<T>()
-    val heads = ArrayList<View>()
-    val foots = ArrayList<View>()
     var entryView:View?=null
-    var showHeadIntEntry = false//是否在空数据的时候显示head
-    var showFootIntEntry = false//是否在空数据的时候显示foot
-    var showEntryIntStart = false//是否在刚进入的时候就直接显示空数据
-    var showPreloading = false//是否在显示
-    var preloadView:View?= null//预加载view
     private var init = false//刚刚初始化
-
-    /**
-     * 获取item总数
-     */
-    fun getItemCount():Int{
-        return getHeadSize()+getFootSize()+getDataSize()
-    }
-
-    /**
-     * 获取显示的headSize
-     */
-    fun getHeadSize():Int{
-        if (datas.isNotEmpty() && !showHeadIntEntry)
-            return 0
-        else
-            return heads.size
-    }
-
-    /**
-     * 获取显示的footView
-     */
-    fun getFootSize():Int{
-        if (datas.isNotEmpty() && !showFootIntEntry)
-            return 0
-        else
-            return foots.size
-    }
 
     /**
      * 获取总共有多少数据
      */
-    fun getDataSize():Int{
+    override fun getDataSize():Int{
         if (datas.size>0)return datas.size
-        if ((init || showEntryIntStart)&& entryView != null)return 1
-        if (!init && preloadView != null && showPreloading) return 1
+        if (init && entryView != null)return 1
         return  0
     }
 
@@ -60,4 +26,45 @@ class RecyclerDataController<T> {
         this.datas.addAll(data)
         init = true
     }
+
+    fun setNewData(data:MutableList<T>){
+        this.datas.clear()
+        this.datas.addAll(data)
+        init = true
+        adapter.notifyDataSetChanged()
+    }
+
+    fun addData(data: MutableList<T>){
+        datas.addAll(data)
+        if (data.size == datas.size)
+            adapter.notifyDataSetChanged()
+        else
+            adapter.notifyItemChanged(adapter.itemCount-data.size,data.size)
+    }
+
+    fun addData(position:Int,item: T){
+        if (position in 0 until datas.size)
+            datas.add(position, item)
+        else
+            datas.add(item)
+        if (datas.size == 1)
+            adapter.notifyDataSetChanged()
+        else{
+            adapter.notifyItemChanged(position)
+        }
+    }
+
+    fun addItem(item: T){
+        addData(getItemCount(),item)
+    }
+
+    fun remove(position: Int){
+        if (position < datas.size){
+            datas.removeAt(position)
+            adapter.notifyItemRemoved(position+getHeadSize())
+        }
+    }
+
+    fun getItem(position: Int) : T?= if (position < datas.size) datas[position] else null
+
 }

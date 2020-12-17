@@ -1,4 +1,4 @@
-package com.xiuone.adapter
+package com.xiuone.adapter.adapter
 
 import android.util.SparseArray
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 
-open class  RecyclerViewViewHolder (itemView: View): RecyclerView.ViewHolder(itemView) {
+open class  RecyclerViewHolder (itemView: View): RecyclerView.ViewHolder(itemView) {
     private val views: SparseArray<View?> = SparseArray()
 
     fun setText(@IdRes viewId: Int, string: String?){
