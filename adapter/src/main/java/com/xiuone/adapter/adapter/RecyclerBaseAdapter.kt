@@ -79,6 +79,7 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
         val headPosition = dataController.getHeadSize()
         val dataPosition = headPosition+dataController.datas.size
         val lp = holder.itemView.layoutParams
+
         if ((position < headPosition || position >= dataPosition )&& lp is StaggeredGridLayoutManager.LayoutParams)
             lp.isFullSpan = true
     }
