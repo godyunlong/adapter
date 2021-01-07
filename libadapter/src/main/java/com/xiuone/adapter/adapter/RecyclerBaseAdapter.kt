@@ -1,6 +1,5 @@
 package com.xiuone.adapter.adapter
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +13,6 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
         val headPosition = dataController.getHeadSize()
         val dataPosition = headPosition+dataController.getDataSize()
         val footPosition = dataPosition+dataController.getFootSize()
-        Log.e("==``","$viewType")
         if (viewType<=0){
             if (abs(viewType) in 0 until headPosition)
                 return RecyclerViewHolder(

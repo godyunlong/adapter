@@ -3,10 +3,10 @@ package com.xiuone.test
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.xiuone.adapter.view.WaveHeadView
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
-    private var recyclerView:XRecyclerView?=null
+    private var recyclerView:RecyclerView?=null
     private var adapter:TestAdapter?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,8 +15,6 @@ class MainActivity : AppCompatActivity() {
         recyclerView?.layoutManager = LinearLayoutManager(this)
         adapter = TestAdapter()
         recyclerView?.adapter = adapter
-        recyclerView?.canRefresh = true
-        recyclerView?.canLoadMore = true
         val data = ArrayList<String>()
         data.add("")
         data.add("")

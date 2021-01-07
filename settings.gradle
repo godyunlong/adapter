@@ -1,3 +1,2 @@
-include ':adapter'
+include ':libadapter'
 include ':app'
-rootProject.name = "adapter"
