@@ -1,14 +1,47 @@
 package com.xiuone.adapter.adapter
 
+import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.xiuone.adapter.controller.RecyclerDataController
+import com.xiuone.adapter.listener.OnChildItemClickListener
+import com.xiuone.adapter.listener.OnChildItemLongClickListener
+import com.xiuone.adapter.listener.OnItemClickListener
+import com.xiuone.adapter.listener.OnItemLongClickListener
 import kotlin.math.abs
 
 abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(){
     val dataController:RecyclerDataController<T> = RecyclerDataController<T>(this)
+    var itemClickListener:OnItemClickListener?=null
+    var itemLongListener:OnItemLongClickListener?=null
+    private var itemChildClickListener:OnChildItemClickListener?=null
+    private var itemChildLongListener:OnChildItemLongClickListener?=null
+    private val itemClickChild = ArrayList<@IdRes Int>()
+    private var itemLongClickChild = ArrayList<@IdRes Int>()
+
+    /**
+     * 绑定单机
+     */
+    fun bindItemChildClickListener(itemChildClickListener:OnChildItemClickListener,@IdRes vararg viewIds: Int){
+        this.itemChildClickListener = itemChildClickListener
+        this.itemClickChild.clear()
+        for (item in viewIds)
+            this.itemClickChild.add(item)
+    }
+
+    /**
+     * 绑定item的长按事件
+     */
+    fun bindItemChildLongClickListener(itemChildLongListener: OnChildItemLongClickListener,@IdRes vararg viewIds: Int){
+        this.itemChildLongListener = itemChildLongListener
+        this.itemLongClickChild.clear()
+        for (item in viewIds)
+            this.itemLongClickChild.add(item)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         val headPosition = dataController.getHeadSize()
         val dataPosition = headPosition+dataController.getDataSize()
@@ -40,6 +73,26 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
         if (position in headPosition until dataPosition){
             val item = dataController.datas[position - headPosition]
             bindView(holder,item, position)
+            //单点
+            if (itemClickListener != null)
+                holder.itemView.setOnClickListener {itemClickListener?.onItemClick(this,it,position)}
+            if (itemChildClickListener != null)
+                for (item in itemClickChild)
+                    holder.getView<View>(item)?.setOnClickListener { itemChildClickListener?.onItemChildClick(this,it,position) }
+
+            //长按
+            if (itemChildLongListener != null) {
+                holder.itemView.setOnLongClickListener {
+                    itemChildLongListener?.onItemChildLongClick(this, it, position)
+                    false
+                }
+            }
+            if (itemChildLongListener != null)
+                for (item in itemLongClickChild)
+                    holder.getView<View>(item)?.setOnLongClickListener {
+                        itemChildLongListener?.onItemChildLongClick(this, it, position)
+                        false
+                    }
         }
     }
 

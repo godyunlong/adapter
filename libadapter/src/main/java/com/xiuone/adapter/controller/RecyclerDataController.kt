@@ -20,21 +20,24 @@ class RecyclerDataController<T>(adapter: RecyclerBaseAdapter<T>) :RecyclerHeadFo
         return  0
     }
 
-    fun setData(data:MutableList<T>,isNew: Boolean){
+    fun setData(data:MutableList<T>?,isNew: Boolean){
+        if (data == null)return
         if (isNew)
             this.datas.clear()
         this.datas.addAll(data)
         init = true
     }
 
-    fun setNewData(data:MutableList<T>){
+    fun setNewData(data:MutableList<T>?){
+        if (data == null)return
         this.datas.clear()
         this.datas.addAll(data)
         init = true
         adapter.notifyDataSetChanged()
     }
 
-    fun addData(data: MutableList<T>){
+    fun addData(data: MutableList<T>?){
+        if (data == null)return
         datas.addAll(data)
         if (data.size == datas.size)
             adapter.notifyDataSetChanged()
@@ -42,7 +45,8 @@ class RecyclerDataController<T>(adapter: RecyclerBaseAdapter<T>) :RecyclerHeadFo
             adapter.notifyItemChanged(adapter.itemCount-data.size,data.size)
     }
 
-    fun addData(position:Int,item: T){
+    fun addData(position:Int,item: T?){
+        if (item == null)return
         if (position in 0 until datas.size)
             datas.add(position, item)
         else
