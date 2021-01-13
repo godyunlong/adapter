@@ -72,25 +72,25 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
         val dataPosition = headPosition+dataController.datas.size
         if (position in headPosition until dataPosition){
             val item = dataController.datas[position - headPosition]
-            bindView(holder,item, position)
+            bindView(holder,item, position-headPosition)
             //单点
             if (itemClickListener != null)
-                holder.itemView.setOnClickListener {itemClickListener?.onItemClick(this,it,position)}
+                holder.itemView.setOnClickListener {itemClickListener?.onItemClick(this,it,position-headPosition)}
             if (itemChildClickListener != null)
                 for (item in itemClickChild)
-                    holder.getView<View>(item)?.setOnClickListener { itemChildClickListener?.onItemChildClick(this,it,position) }
+                    holder.getView<View>(item)?.setOnClickListener { itemChildClickListener?.onItemChildClick(this,it,position-headPosition) }
 
             //长按
             if (itemChildLongListener != null) {
                 holder.itemView.setOnLongClickListener {
-                    itemChildLongListener?.onItemChildLongClick(this, it, position)
+                    itemChildLongListener?.onItemChildLongClick(this, it, position-headPosition)
                     false
                 }
             }
             if (itemChildLongListener != null)
                 for (item in itemLongClickChild)
                     holder.getView<View>(item)?.setOnLongClickListener {
-                        itemChildLongListener?.onItemChildLongClick(this, it, position)
+                        itemChildLongListener?.onItemChildLongClick(this, it, position-headPosition)
                         false
                     }
         }
