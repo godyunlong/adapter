@@ -68,29 +68,32 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
     override fun getItemCount(): Int = dataController.getItemCount()
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-        val headPosition = dataController.getHeadSize()
-        val dataPosition = headPosition+dataController.datas.size
-        if (position in headPosition until dataPosition){
-            val item = dataController.datas[position - headPosition]
-            bindView(holder,item, position-headPosition)
+        val headSize = dataController.getHeadSize()
+        val headDataSize = headSize+dataController.datas.size
+        if (position in headSize until headDataSize){
+            val dataPosition = position - headSize
+            val item = dataController.datas[position - headSize]
+            bindView(holder,item, dataPosition)
             //单点
             if (itemClickListener != null)
-                holder.itemView.setOnClickListener {itemClickListener?.onItemClick(this,it,position-headPosition)}
+                holder.itemView.setOnClickListener {itemClickListener?.onItemClick(this,it,dataPosition)}
             if (itemChildClickListener != null)
                 for (item in itemClickChild)
-                    holder.getView<View>(item)?.setOnClickListener { itemChildClickListener?.onItemChildClick(this,it,position-headPosition) }
+                    holder.getView<View>(item)?.setOnClickListener {
+                        itemChildClickListener?.onItemChildClick(this,it,dataPosition)
+                    }
 
             //长按
             if (itemChildLongListener != null) {
                 holder.itemView.setOnLongClickListener {
-                    itemChildLongListener?.onItemChildLongClick(this, it, position-headPosition)
+                    itemChildLongListener?.onItemChildLongClick(this, it, dataPosition)
                     false
                 }
             }
             if (itemChildLongListener != null)
                 for (item in itemLongClickChild)
                     holder.getView<View>(item)?.setOnLongClickListener {
-                        itemChildLongListener?.onItemChildLongClick(this, it, position-headPosition)
+                        itemChildLongListener?.onItemChildLongClick(this, it, dataPosition)
                         false
                     }
         }
