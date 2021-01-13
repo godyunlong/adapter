@@ -1,6 +1,8 @@
 package com.xiuone.adapter.controller
 
 import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.xiuone.adapter.adapter.RecyclerBaseAdapter
 
 /**
@@ -8,8 +10,15 @@ import com.xiuone.adapter.adapter.RecyclerBaseAdapter
  */
 class RecyclerDataController<T>(adapter: RecyclerBaseAdapter<T>) :RecyclerHeadFootController<T>(adapter){
     val datas = ArrayList<T>()
-    var entryView:View?=null
+    private var entryView:View?=null
     private var init = false//刚刚初始化
+
+    fun setEntryView(entryView: View){
+        this.entryView = entryView
+        entryView.layoutParams = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+
+    fun getEntryView():View?= entryView
 
     /**
      * 获取总共有多少数据
@@ -20,7 +29,7 @@ class RecyclerDataController<T>(adapter: RecyclerBaseAdapter<T>) :RecyclerHeadFo
         return  0
     }
 
-    fun setData(data:MutableList<T>?,isNew: Boolean){
+    fun setData(data:List<T>?,isNew: Boolean){
         if (data == null)return
         if (isNew)
             this.datas.clear()
@@ -28,7 +37,7 @@ class RecyclerDataController<T>(adapter: RecyclerBaseAdapter<T>) :RecyclerHeadFo
         init = true
     }
 
-    fun setNewData(data:MutableList<T>?){
+    fun setNewData(data:List<T>?){
         if (data == null)return
         this.datas.clear()
         this.datas.addAll(data)
@@ -36,7 +45,7 @@ class RecyclerDataController<T>(adapter: RecyclerBaseAdapter<T>) :RecyclerHeadFo
         adapter.notifyDataSetChanged()
     }
 
-    fun addData(data: MutableList<T>?){
+    fun addData(data: List<T>?){
         if (data == null)return
         datas.addAll(data)
         if (data.size == datas.size)
@@ -63,12 +72,11 @@ class RecyclerDataController<T>(adapter: RecyclerBaseAdapter<T>) :RecyclerHeadFo
     }
 
     fun remove(position: Int){
-        if (position < datas.size){
+        if (position in 0 until datas.size){
             datas.removeAt(position)
             adapter.notifyItemRemoved(position+getHeadSize())
         }
     }
 
-    fun getItem(position: Int) : T?= if (position < datas.size) datas[position] else null
-
+    fun getItem(position: Int) : T?= if (position in 0 until datas.size) datas[position] else null
 }

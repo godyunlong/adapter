@@ -1,7 +1,10 @@
 package com.xiuone.adapter.controller
 
 import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.xiuone.adapter.adapter.RecyclerBaseAdapter
+import com.xiuone.adapter.adapter.RecyclerViewHolder
 
 /**
  * 用于控制recyclerView的数量
@@ -30,7 +33,11 @@ open abstract class RecyclerHeadFootController<T>(val adapter: RecyclerBaseAdapt
     /**
      * 添加head 或者foot
      */
-    fun addView(view: View,head:Boolean){
+    fun addView(view: View,head:Boolean,layoutParams:RecyclerView.LayoutParams?=null){
+        var params = layoutParams
+        if (params == null)
+            params = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+        view.layoutParams = params
         if (head) {
             heads.add(view)
             adapter.notifyItemInserted(heads.size)
@@ -57,10 +64,10 @@ open abstract class RecyclerHeadFootController<T>(val adapter: RecyclerBaseAdapt
      * 移除head 或者foot
      */
     fun removeView(position:Int,head: Boolean){
-        if (position < heads.size && head){
+        if (position in 0 until heads.size && head){
             heads.removeAt(position)
             adapter.notifyItemRemoved(position)
-        }else if (position < foots.size && !head){
+        }else if (position in 0 until foots.size && !head){
             foots.removeAt(position)
             adapter.notifyItemRemoved(position+getHeadSize())
         }

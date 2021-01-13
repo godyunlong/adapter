@@ -2,6 +2,7 @@ package com.xiuone.adapter.adapter
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Space
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -58,9 +59,7 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
                     ) - dataPosition]
                 )
             if ((abs(viewType) in headPosition until dataPosition) && dataController.datas.size<=0)
-                return RecyclerViewHolder(
-                    dataController.entryView!!
-                )
+                return RecyclerViewHolder(dataController.getEntryView()?:Space(parent.context))
         }
         return onDataCreateViewHolder(parent,viewType)
     }
@@ -138,9 +137,31 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
             lp.isFullSpan = true
     }
 
-    fun getViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder?{
+    fun getDataViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder?{
         if (position in 0 until dataController.getDataSize()) {
-            val holder = recyclerView.findViewHolderForAdapterPosition(position + dataController.getHeadSize())
+            return getViewHolder(recyclerView, position+dataController.getHeadSize())
+        }
+        return null
+    }
+
+    fun getHeadViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder?{
+        if (position in 0 until dataController.getHeadSize()) {
+            return getViewHolder(recyclerView, position)
+        }
+        return null
+    }
+
+    fun getFootViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder?{
+        if (position in 0 until dataController.getFootSize()) {
+            return getViewHolder(recyclerView, position+dataController.getHeadSize()+dataController.getDataSize())
+        }
+        return null
+    }
+
+
+    private fun getViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder?{
+        if (position in 0 until itemCount) {
+            val holder = recyclerView.findViewHolderForAdapterPosition(position)
             if (holder is RecyclerViewHolder)
                 return holder
         }
