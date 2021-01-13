@@ -138,6 +138,15 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
             lp.isFullSpan = true
     }
 
+    fun getViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder?{
+        if (position in 0 until dataController.getDataSize()) {
+            val holder = recyclerView.findViewHolderForAdapterPosition(position + dataController.getHeadSize())
+            if (holder is RecyclerViewHolder)
+                return holder
+        }
+        return null
+    }
+
 
 
     /**
