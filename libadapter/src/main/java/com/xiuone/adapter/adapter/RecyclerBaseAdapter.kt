@@ -50,9 +50,9 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
         if (viewType<0){
             val position = abs(viewType) -1
             return if (position in 0 until headPosition)
-                RecyclerViewHolder(dataController.heads[abs(viewType)])
-            else if (abs(viewType) in dataPosition until footPosition)
-                RecyclerViewHolder(dataController.foots[abs(viewType) - dataPosition])
+                RecyclerViewHolder(dataController.heads[position])
+            else if (position in dataPosition until footPosition)
+                RecyclerViewHolder(dataController.foots[position])
             else{
                 RecyclerViewHolder(dataController.getEntryView()?:Space(parent.context))
             }
