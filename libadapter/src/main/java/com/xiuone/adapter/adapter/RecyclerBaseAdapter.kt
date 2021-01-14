@@ -47,19 +47,15 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
         val headPosition = dataController.getHeadSize()
         val dataPosition = headPosition+dataController.getDataSize()
         val footPosition = dataPosition+dataController.getFootSize()
-        if (viewType<=0){
-            if (abs(viewType) in 0 until headPosition)
-                return RecyclerViewHolder(
-                    dataController.heads[abs(viewType)]
-                )
-            if (abs(viewType) in dataPosition until footPosition)
-                return RecyclerViewHolder(
-                    dataController.foots[abs(
-                        viewType
-                    ) - dataPosition]
-                )
-            if ((abs(viewType) in headPosition until dataPosition) && dataController.datas.size<=0)
-                return RecyclerViewHolder(dataController.getEntryView()?:Space(parent.context))
+        if (viewType<0){
+            val position = abs(viewType) -1
+            return if (position in 0 until headPosition)
+                RecyclerViewHolder(dataController.heads[abs(viewType)])
+            else if (abs(viewType) in dataPosition until footPosition)
+                RecyclerViewHolder(dataController.foots[abs(viewType) - dataPosition])
+            else{
+                RecyclerViewHolder(dataController.getEntryView()?:Space(parent.context))
+            }
         }
         return onDataCreateViewHolder(parent,viewType)
     }
@@ -99,11 +95,14 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val headPosition = dataController.getHeadSize()
-        val dataPosition = headPosition+dataController.datas.size
-        if (position < headPosition || position >= dataPosition)
-            return -position
-        return dataType(headPosition,position)
+        val headSize = dataController.getHeadSize()
+        val dataSize = dataController.getDataSize()
+        val footSize = dataController.getFootSize()
+        return if ((position in 0 until headSize )|| (position in headSize+dataSize until headSize+dataSize+footSize)){
+            -position-1
+        } else if (position in headSize until headSize+dataSize){
+            dataType(headSize,position)
+        }else -(headSize+dataSize+footSize)*2
     }
 
     /**
