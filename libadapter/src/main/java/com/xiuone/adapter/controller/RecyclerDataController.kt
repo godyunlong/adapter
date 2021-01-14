@@ -29,6 +29,8 @@ class RecyclerDataController<T>(adapter: RecyclerBaseAdapter<T>) :RecyclerHeadFo
         return  0
     }
 
+    fun getDataSizeNotEntryView():Int = datas.size
+
     fun setData(data:List<T>?,isNew: Boolean){
         if (data == null)return
         if (isNew)

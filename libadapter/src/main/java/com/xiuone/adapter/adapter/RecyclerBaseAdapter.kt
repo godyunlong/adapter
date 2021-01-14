@@ -49,10 +49,11 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
         val footPosition = dataPosition+dataController.getFootSize()
         if (viewType<0){
             val position = abs(viewType) -1
+            val footPosition = position - dataPosition
             return if (position in 0 until headPosition)
                 RecyclerViewHolder(dataController.heads[position])
-            else if (position in dataPosition until footPosition)
-                RecyclerViewHolder(dataController.foots[position])
+            else if (position in dataPosition until footPosition && footPosition in 0 until dataController.getFootSize())
+                RecyclerViewHolder(dataController.foots[footPosition])
             else{
                 RecyclerViewHolder(dataController.getEntryView()?:Space(parent.context))
             }
@@ -96,7 +97,7 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
 
     override fun getItemViewType(position: Int): Int {
         val headSize = dataController.getHeadSize()
-        val dataSize = dataController.getDataSize()
+        val dataSize = dataController.getDataSizeNotEntryView()
         val footSize = dataController.getFootSize()
         return if ((position in 0 until headSize )|| (position in headSize+dataSize until headSize+dataSize+footSize)){
             -position-1
@@ -137,7 +138,7 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
     }
 
     fun getDataViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder?{
-        if (position in 0 until dataController.getDataSize()) {
+        if (position in 0 until dataController.getDataSizeNotEntryView()) {
             return getViewHolder(recyclerView, position+dataController.getHeadSize())
         }
         return null
