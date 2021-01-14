@@ -103,7 +103,7 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
             -position-1
         } else if (position in headSize until headSize+dataSize){
             dataType(headSize,position)
-        }else -(headSize+dataSize+footSize)*2
+        }else -(headSize+dataSize+footSize+10)*2
     }
 
     /**
