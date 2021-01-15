@@ -46,13 +46,12 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         val headPosition = dataController.getHeadSize()
         val dataPosition = headPosition+dataController.getDataSize()
-        val footPosition = dataPosition+dataController.getFootSize()
         if (viewType<0){
             val position = abs(viewType) -1
             val footPosition = position - dataPosition
             return if (position in 0 until headPosition)
                 RecyclerViewHolder(dataController.heads[position])
-            else if (position in dataPosition until footPosition && footPosition in 0 until dataController.getFootSize())
+            else if (position in dataPosition until itemCount && footPosition in 0 until dataController.getFootSize())
                 RecyclerViewHolder(dataController.foots[footPosition])
             else{
                 RecyclerViewHolder(dataController.getEntryView()?:Space(parent.context))
