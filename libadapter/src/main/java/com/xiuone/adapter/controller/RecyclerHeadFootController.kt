@@ -50,14 +50,18 @@ open abstract class RecyclerHeadFootController<T>(val adapter: RecyclerBaseAdapt
     /**
      * 指定位置添加head或者foot
      */
-    fun addView(position: Int,view: View,head: Boolean){
-        if (position < heads.size && position>=0 && head) {
+    fun addView(position: Int,view: View,head: Boolean,layoutParams:RecyclerView.LayoutParams?=null){
+        var params = layoutParams
+        if (params == null)
+            params = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+        view.layoutParams = params
+        if (position in 0 until getHeadSize() && head) {
             heads.add(position, view)
             adapter.notifyItemInserted(position)
-        }else if (position < foots.size && position >=0 && !head){
+        }else if (position in 0 until  getFootSize() && !head){
             foots.add(position,view)
             adapter.notifyItemInserted(position+getHeadSize()+getDataSize())
-        }else addView(view,head)
+        }else addView(view,head,params)
     }
 
     /**
@@ -69,7 +73,7 @@ open abstract class RecyclerHeadFootController<T>(val adapter: RecyclerBaseAdapt
             adapter.notifyItemRemoved(position)
         }else if (position in 0 until foots.size && !head){
             foots.removeAt(position)
-            adapter.notifyItemRemoved(position+getHeadSize())
+            adapter.notifyItemRemoved(position+getHeadSize()+getDataSize())
         }
     }
 

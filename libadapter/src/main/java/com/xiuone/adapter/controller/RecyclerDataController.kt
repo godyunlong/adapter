@@ -52,25 +52,29 @@ class RecyclerDataController<T>(adapter: RecyclerBaseAdapter<T>) :RecyclerHeadFo
         datas.addAll(data)
         if (data.size == datas.size)
             adapter.notifyDataSetChanged()
-        else
-            adapter.notifyItemChanged(adapter.itemCount-data.size,data.size)
+        else{
+            adapter.notifyItemRangeInserted(getDataSize()+getHeadSize() - data.size, data.size)
+        }
     }
 
     fun addData(position:Int,item: T?){
         if (item == null)return
-        if (position in 0 until datas.size)
+        if (position in 0 until datas.size) {
             datas.add(position, item)
-        else
-            datas.add(item)
-        if (datas.size == 1)
-            adapter.notifyDataSetChanged()
-        else{
-            adapter.notifyItemChanged(position)
+            adapter.notifyItemInserted(getHeadSize()+position)
+        } else {
+            addItem(item)
         }
     }
 
-    fun addItem(item: T){
-        addData(getItemCount(),item)
+    fun addItem(item: T?){
+        if (item == null)return
+        datas.add(item)
+        if (datas.size >1 ){
+            adapter.notifyItemInserted(getDataSize()+getHeadSize())
+        }else{
+            adapter.notifyDataSetChanged()
+        }
     }
 
     fun remove(position: Int){
