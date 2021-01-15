@@ -1,5 +1,6 @@
 package com.xiuone.adapter.adapter
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Space
@@ -7,6 +8,7 @@ import androidx.annotation.IdRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.xiuone.adapter.R
 import com.xiuone.adapter.controller.RecyclerDataController
 import com.xiuone.adapter.listener.OnChildItemClickListener
 import com.xiuone.adapter.listener.OnChildItemLongClickListener
@@ -54,7 +56,7 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
             else if (position in dataPosition until itemCount && footPosition in 0 until dataController.getFootSize())
                 RecyclerViewHolder(dataController.foots[footPosition])
             else{
-                RecyclerViewHolder(dataController.getEntryView()?:Space(parent.context))
+                RecyclerViewHolder(dataController.getEntryView()?:LayoutInflater.from(parent.context).inflate(R.layout.item_space,null))
             }
         }
         return onDataCreateViewHolder(parent,viewType)
