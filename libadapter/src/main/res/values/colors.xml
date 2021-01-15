@@ -5,4 +5,7 @@
 
     <color name="gray_30">#4d999999</color>
     <color name="gray_10">#1a999999</color>
+
+    <color name="gray_9999">#999999</color>
+    <color name="gray_f2f2">#F2F2F2</color>
 </resources>
