@@ -98,13 +98,16 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
 
     override fun getItemViewType(position: Int): Int {
         val headSize = dataController.getHeadSize()
-        val dataSize = dataController.getDataSizeNotEntryView()
+        val dataEntrySize = dataController.getDataSizeNotEntryView()
+        val dataSize = dataController.getDataSize()
         val footSize = dataController.getFootSize()
-        return if ((position in 0 until headSize )|| (position in headSize+dataSize until headSize+dataSize+footSize)){
-            -position-1
-        } else if (position in headSize until headSize+dataSize){
-            dataType(headSize,position)
-        }else -(headSize+dataSize+footSize+10)*2
+        if (position in  0 until headSize)
+            return -position-1
+        else if (position in headSize+dataSize until itemCount)
+            return -position-1
+        else if (position in headSize until headSize+dataEntrySize)
+            return dataType(headSize,position)
+        else return -(headSize+dataSize+footSize+10)*2
     }
 
     /**
