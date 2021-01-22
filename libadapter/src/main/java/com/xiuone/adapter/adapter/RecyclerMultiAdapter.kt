@@ -8,7 +8,7 @@ import java.lang.Exception
 
 abstract class RecyclerMultiAdapter<T : MultiEntry>() :
     RecyclerBaseAdapter<T>() {
-    val hashMap = HashMap<Int,@LayoutRes Int>()
+    protected val hashMap = HashMap<Int,@LayoutRes Int>()
     override fun dataType(headPosition: Int, position: Int): Int {
         val item = dataController.datas[position-headPosition]
         return item.getViewType()
