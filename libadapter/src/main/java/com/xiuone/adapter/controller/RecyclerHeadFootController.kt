@@ -71,9 +71,11 @@ open abstract class RecyclerHeadFootController<T>(val adapter: RecyclerBaseAdapt
         if (position in 0 until heads.size && head){
             heads.removeAt(position)
             adapter.notifyItemRemoved(position)
+            adapter.notifyItemRangeChanged(position,getItemCount()+1)
         }else if (position in 0 until foots.size && !head){
             foots.removeAt(position)
             adapter.notifyItemRemoved(position+getHeadSize()+getDataSize())
+            adapter.notifyItemRangeChanged(position+getHeadSize()+getDataSize(),getItemCount()+1)
         }
     }
 
