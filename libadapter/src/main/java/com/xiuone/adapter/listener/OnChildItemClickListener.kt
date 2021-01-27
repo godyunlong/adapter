@@ -2,7 +2,8 @@ package com.xiuone.adapter.listener
 
 import android.view.View
 import com.xiuone.adapter.adapter.RecyclerBaseAdapter
+import com.xiuone.adapter.adapter.RecyclerViewHolder
 
 interface OnChildItemClickListener<T>{
-    fun onItemChildClick(adapter: RecyclerBaseAdapter<T> ,view:View,position:Int)
+    fun onItemChildClick(view:View,holder: RecyclerViewHolder<T>)
 }
