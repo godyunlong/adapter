@@ -81,7 +81,6 @@ class RecyclerDataController<T>(adapter: RecyclerBaseAdapter<T>) :RecyclerHeadFo
         if (position in 0 until datas.size){
             datas.removeAt(position)
             adapter.notifyItemRemoved(position+getHeadSize())
-            adapter.notifyItemRangeChanged(position+getHeadSize(),getItemCount()+1)
         }
     }
 

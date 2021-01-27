@@ -73,27 +73,51 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
             bindView(holder,item, dataPosition)
             //单点
             if (itemClickListener != null)
-                holder.itemView.setOnClickListener {itemClickListener?.onItemClick(this,it,dataPosition)}
+                holder.itemView.setOnClickListener {
+                    val newPosition = getLayoutPositionData(holder)
+                    if (newPosition in 0 until dataController.getDataSizeNotEntryView()){
+                        itemClickListener?.onItemClick(this,it,newPosition)
+                    }
+                }
             if (itemChildClickListener != null)
                 for (item in itemClickChild)
                     holder.getView<View>(item)?.setOnClickListener {
-                        itemChildClickListener?.onItemChildClick(this,it,dataPosition)
+                        val newPosition = getLayoutPositionData(holder)
+                        if (newPosition in 0 until dataController.getDataSizeNotEntryView()){
+                            itemChildClickListener?.onItemChildClick(this,it,newPosition)
+                        }
                     }
 
             //长按
             if (itemChildLongListener != null) {
                 holder.itemView.setOnLongClickListener {
-                    itemChildLongListener?.onItemChildLongClick(this, it, dataPosition)
+                    val newPosition = getLayoutPositionData(holder)
+                    if (newPosition in 0 until dataController.getDataSizeNotEntryView()){
+                        itemChildLongListener?.onItemChildLongClick(this, it, newPosition)
+                    }
                     false
                 }
             }
             if (itemChildLongListener != null)
                 for (item in itemLongClickChild)
                     holder.getView<View>(item)?.setOnLongClickListener {
-                        itemChildLongListener?.onItemChildLongClick(this, it, dataPosition)
+                        val newPosition = getLayoutPositionData(holder)
+                        if (newPosition in 0 until dataController.getDataSizeNotEntryView()){
+                            itemChildLongListener?.onItemChildLongClick(this, it, newPosition)
+                        }
                         false
                     }
         }
+    }
+
+    private fun getLayoutPositionData(holder: RecyclerViewHolder):Int{
+        val headSize = dataController.getHeadSize()
+        val headDataSize = headSize+dataController.datas.size
+        val newPosition = holder.layoutPosition
+        if (newPosition in headSize until headDataSize){
+            return newPosition - headSize
+        }
+        return -1
     }
 
     override fun getItemViewType(position: Int): Int {
