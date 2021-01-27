@@ -83,9 +83,9 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder<T
                     }
 
             //长按
-            if (itemChildLongListener != null) {
+            if (itemLongListener != null) {
                 holder.itemView.setOnLongClickListener {
-                    itemChildLongListener?.onItemChildLongClick(it, holder)
+                    itemLongListener?.onItemLongClick(it, holder)
                     false
                 }
             }
