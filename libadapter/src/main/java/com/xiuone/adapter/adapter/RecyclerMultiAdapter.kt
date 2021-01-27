@@ -14,9 +14,9 @@ abstract class RecyclerMultiAdapter<T : MultiEntry>() :
         return item.getViewType()
     }
 
-    override fun onDataCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
+    override fun onDataCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder<T> {
         val layoutRes = hashMap[viewType] ?: throw Exception("数据异常，没有相应的type")
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
-        return RecyclerViewHolder(view)
+        return RecyclerViewHolder(this,view)
     }
 }

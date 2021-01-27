@@ -16,19 +16,19 @@ import com.xiuone.adapter.listener.OnItemClickListener
 import com.xiuone.adapter.listener.OnItemLongClickListener
 import kotlin.math.abs
 
-abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(){
+abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder<T>>(){
     val dataController:RecyclerDataController<T> = RecyclerDataController<T>(this)
-    var itemClickListener:OnItemClickListener?=null
-    var itemLongListener:OnItemLongClickListener?=null
-    private var itemChildClickListener:OnChildItemClickListener?=null
-    private var itemChildLongListener:OnChildItemLongClickListener?=null
+    var itemClickListener:OnItemClickListener<T>?=null
+    var itemLongListener:OnItemLongClickListener<T>?=null
+    private var itemChildClickListener:OnChildItemClickListener<T>?=null
+    private var itemChildLongListener:OnChildItemLongClickListener<T>?=null
     private val itemClickChild = ArrayList<@IdRes Int>()
     private var itemLongClickChild = ArrayList<@IdRes Int>()
 
     /**
      * 绑定单机
      */
-    fun bindItemChildClickListener(itemChildClickListener:OnChildItemClickListener,@IdRes vararg viewIds: Int){
+    fun bindItemChildClickListener(itemChildClickListener:OnChildItemClickListener<T>,@IdRes vararg viewIds: Int){
         this.itemChildClickListener = itemChildClickListener
         this.itemClickChild.clear()
         for (item in viewIds)
@@ -38,25 +38,25 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
     /**
      * 绑定item的长按事件
      */
-    fun bindItemChildLongClickListener(itemChildLongListener: OnChildItemLongClickListener,@IdRes vararg viewIds: Int){
+    fun bindItemChildLongClickListener(itemChildLongListener: OnChildItemLongClickListener<T>,@IdRes vararg viewIds: Int){
         this.itemChildLongListener = itemChildLongListener
         this.itemLongClickChild.clear()
         for (item in viewIds)
             this.itemLongClickChild.add(item)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder<T> {
         val headPosition = dataController.getHeadSize()
         val dataPosition = headPosition+dataController.getDataSize()
         if (viewType<0){
             val position = abs(viewType) -1
             val footPosition = position - dataPosition
             return if (position in 0 until headPosition)
-                RecyclerViewHolder(dataController.heads[position])
+                RecyclerViewHolder(this,dataController.heads[position])
             else if (position in dataPosition until itemCount && footPosition in 0 until dataController.getFootSize())
-                RecyclerViewHolder(dataController.foots[footPosition])
+                RecyclerViewHolder(this,dataController.foots[footPosition])
             else{
-                RecyclerViewHolder(dataController.getEntryView()?:LayoutInflater.from(parent.context).inflate(R.layout.item_space,null))
+                RecyclerViewHolder(this,dataController.getEntryView()?:LayoutInflater.from(parent.context).inflate(R.layout.item_space,null))
             }
         }
         return onDataCreateViewHolder(parent,viewType)
@@ -64,7 +64,7 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
 
     override fun getItemCount(): Int = dataController.getItemCount()
 
-    override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerViewHolder<T>, position: Int) {
         val headSize = dataController.getHeadSize()
         val headDataSize = headSize+dataController.datas.size
         if (position in headSize until headDataSize){
@@ -74,51 +74,30 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
             //单点
             if (itemClickListener != null)
                 holder.itemView.setOnClickListener {
-                    val newPosition = getLayoutPositionData(holder)
-                    if (newPosition in 0 until dataController.getDataSizeNotEntryView()){
-                        itemClickListener?.onItemClick(this,it,newPosition)
-                    }
+                    itemClickListener?.onItemClick(it,holder)
                 }
             if (itemChildClickListener != null)
                 for (item in itemClickChild)
                     holder.getView<View>(item)?.setOnClickListener {
-                        val newPosition = getLayoutPositionData(holder)
-                        if (newPosition in 0 until dataController.getDataSizeNotEntryView()){
-                            itemChildClickListener?.onItemChildClick(this,it,newPosition)
-                        }
+                        itemClickListener?.onItemClick(it,holder)
                     }
 
             //长按
             if (itemChildLongListener != null) {
                 holder.itemView.setOnLongClickListener {
-                    val newPosition = getLayoutPositionData(holder)
-                    if (newPosition in 0 until dataController.getDataSizeNotEntryView()){
-                        itemChildLongListener?.onItemChildLongClick(this, it, newPosition)
-                    }
+                    itemChildLongListener?.onItemChildLongClick(it, holder)
                     false
                 }
             }
             if (itemChildLongListener != null)
                 for (item in itemLongClickChild)
                     holder.getView<View>(item)?.setOnLongClickListener {
-                        val newPosition = getLayoutPositionData(holder)
-                        if (newPosition in 0 until dataController.getDataSizeNotEntryView()){
-                            itemChildLongListener?.onItemChildLongClick(this, it, newPosition)
-                        }
+                        itemChildLongListener?.onItemChildLongClick(it,holder)
                         false
                     }
         }
     }
 
-    private fun getLayoutPositionData(holder: RecyclerViewHolder):Int{
-        val headSize = dataController.getHeadSize()
-        val headDataSize = headSize+dataController.datas.size
-        val newPosition = holder.layoutPosition
-        if (newPosition in headSize until headDataSize){
-            return newPosition - headSize
-        }
-        return -1
-    }
 
     override fun getItemViewType(position: Int): Int {
         val headSize = dataController.getHeadSize()
@@ -154,7 +133,7 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
         }
     }
 
-    override fun onViewAttachedToWindow(holder: RecyclerViewHolder) {
+    override fun onViewAttachedToWindow(holder: RecyclerViewHolder<T>) {
         super.onViewAttachedToWindow(holder)
         val position = holder.layoutPosition
         val headPosition = dataController.getHeadSize()
@@ -165,21 +144,21 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
             lp.isFullSpan = true
     }
 
-    fun getDataViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder?{
+    fun getDataViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder<T>?{
         if (position in 0 until dataController.getDataSizeNotEntryView()) {
             return getViewHolder(recyclerView, position+dataController.getHeadSize())
         }
         return null
     }
 
-    fun getHeadViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder?{
+    fun getHeadViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder<T>?{
         if (position in 0 until dataController.getHeadSize()) {
             return getViewHolder(recyclerView, position)
         }
         return null
     }
 
-    fun getFootViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder?{
+    fun getFootViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder<T>?{
         if (position in 0 until dataController.getFootSize()) {
             return getViewHolder(recyclerView, position+dataController.getHeadSize()+dataController.getDataSize())
         }
@@ -187,11 +166,11 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
     }
 
 
-    private fun getViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder?{
+    private fun getViewHolder(recyclerView: RecyclerView,position: Int):RecyclerViewHolder<T>?{
         if (position in 0 until itemCount) {
             val holder = recyclerView.findViewHolderForAdapterPosition(position)
-            if (holder is RecyclerViewHolder)
-                return holder
+            if (holder is RecyclerViewHolder<*>)
+                return holder as RecyclerViewHolder<T>?
         }
         return null
     }
@@ -203,8 +182,7 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder>(
      */
     open fun onAttachedToRecyclerView(position: Int):Int = 1
     abstract fun dataType(headPosition:Int,position: Int):Int
-    abstract fun onDataCreateViewHolder(parent: ViewGroup,viewType: Int): RecyclerViewHolder
-    abstract fun bindView(holder: RecyclerViewHolder, item:T, position: Int)
-
+    abstract fun onDataCreateViewHolder(parent: ViewGroup,viewType: Int): RecyclerViewHolder<T>
+    abstract fun bindView(holder: RecyclerViewHolder<T>, item:T, position: Int)
 
 }

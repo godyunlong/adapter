@@ -2,7 +2,8 @@ package com.xiuone.adapter.listener
 
 import android.view.View
 import com.xiuone.adapter.adapter.RecyclerBaseAdapter
+import com.xiuone.adapter.adapter.RecyclerViewHolder
 
-interface OnChildItemLongClickListener{
-    fun onItemChildLongClick(adapter: RecyclerBaseAdapter<*>, view:View, position:Int)
+interface OnChildItemLongClickListener<T>{
+    fun onItemChildLongClick(view:View, holder: RecyclerViewHolder<T>)
 }

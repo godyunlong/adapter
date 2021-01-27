@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 
-open class  RecyclerViewHolder (itemView: View): RecyclerView.ViewHolder(itemView) {
+open class  RecyclerViewHolder <T>(val adapter: RecyclerBaseAdapter<T>,itemView: View): RecyclerView.ViewHolder(itemView) {
     private val views: SparseArray<View?> = SparseArray()
 
     fun setText(@IdRes viewId: Int, string: String?){
@@ -36,5 +36,15 @@ open class  RecyclerViewHolder (itemView: View): RecyclerView.ViewHolder(itemVie
             return view as VI
         }else
             return null
+    }
+
+    fun getDataPosition():Int{
+        val headSize = adapter.dataController.getHeadSize()
+        val headDataSize = headSize+adapter.dataController.datas.size
+        val position = layoutPosition
+        if (position in headSize until headDataSize){
+            return position - headSize
+        }
+        return -1
     }
 }
