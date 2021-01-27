@@ -79,7 +79,7 @@ abstract class RecyclerBaseAdapter<T> :RecyclerView.Adapter<RecyclerViewHolder<T
             if (itemChildClickListener != null)
                 for (item in itemClickChild)
                     holder.getView<View>(item)?.setOnClickListener {
-                        itemClickListener?.onItemClick(it,holder)
+                        itemChildClickListener?.onItemChildClick(it,holder)
                     }
 
             //长按
