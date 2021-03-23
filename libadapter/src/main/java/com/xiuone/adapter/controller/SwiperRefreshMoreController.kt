@@ -9,12 +9,12 @@ class SwiperRefreshMoreController <T> : SwipeRefreshLayout.OnRefreshListener{
     private var pullTo:SwipeRefreshLayout?=null
     private var listener: RefreshMoreImpl?=null
     private var adapter:RecyclerBaseAdapter<T>?=null
-    constructor(pullTo:SwipeRefreshLayout,recyclerView: RecyclerView,adapter:RecyclerBaseAdapter<T>,listener:RefreshMoreImpl){
-        pullTo.setOnRefreshListener(this)
+    constructor(pullTo:SwipeRefreshLayout?,recyclerView: RecyclerView?,adapter:RecyclerBaseAdapter<T>,listener:RefreshMoreImpl){
+        pullTo?.setOnRefreshListener(this)
         this.adapter = adapter
         this.listener = listener
         this.pullTo = pullTo
-        recyclerView.adapter = adapter
+        recyclerView?.adapter = adapter
     }
 
     fun getAdapter():RecyclerBaseAdapter<T>? = adapter

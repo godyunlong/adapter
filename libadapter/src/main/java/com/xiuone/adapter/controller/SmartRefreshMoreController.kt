@@ -15,14 +15,14 @@ class SmartRefreshMoreController <T> : OnRefreshListener, OnLoadMoreListener{
     private var pageSize = 20
     private var listener: RefreshMoreImpl?=null
     private var adapter:RecyclerBaseAdapter<T>?=null
-    constructor(pullTo:SmartRefreshLayout,recyclerView: RecyclerView,adapter:RecyclerBaseAdapter<T>,listener:RefreshMoreImpl){
-        pullTo.setOnRefreshListener(this)
+    constructor(pullTo:SmartRefreshLayout?,recyclerView: RecyclerView?,adapter:RecyclerBaseAdapter<T>,listener:RefreshMoreImpl){
+        pullTo?.setOnRefreshListener(this)
         pullTo?.setEnableLoadMore(true)
         pullTo?.setOnLoadMoreListener(this)
         this.adapter = adapter
         this.listener = listener
         this.pullTo = pullTo
-        recyclerView.adapter = adapter
+        recyclerView?.adapter = adapter
     }
 
     fun getDefindPage():Int = defindPage
