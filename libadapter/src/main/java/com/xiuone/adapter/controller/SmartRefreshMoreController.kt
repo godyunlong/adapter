@@ -10,9 +10,9 @@ import com.xiuone.adapter.listener.RefreshMoreImpl
 
 class SmartRefreshMoreController <T> : OnRefreshListener, OnLoadMoreListener{
     private var pullTo:SmartRefreshLayout?=null
-    private var defindPage = 1
-    private var page = defindPage
-    private var pageSize = 20
+    var defindPage = 1
+    var page = defindPage
+    var pageSize = 20
     private var listener: RefreshMoreImpl?=null
     private var adapter:RecyclerBaseAdapter<T>?=null
     constructor(pullTo:SmartRefreshLayout?,recyclerView: RecyclerView?,adapter:RecyclerBaseAdapter<T>,listener:RefreshMoreImpl){
@@ -24,8 +24,6 @@ class SmartRefreshMoreController <T> : OnRefreshListener, OnLoadMoreListener{
         this.pullTo = pullTo
         recyclerView?.adapter = adapter
     }
-
-    fun getDefindPage():Int = defindPage
 
     fun getAdapter():RecyclerBaseAdapter<T>? = adapter
 
